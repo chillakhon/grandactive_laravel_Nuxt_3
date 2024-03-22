@@ -38,7 +38,6 @@ const section = await axios.get('api/section').then(res => {
 <style scoped>
 
 
-
 @media  only screen and (max-width: 770px) {
   .ca__suptitle{
     font-size: 15px;

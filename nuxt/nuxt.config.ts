@@ -5,6 +5,7 @@ export default defineNuxtConfig({
     '@pinia/nuxt',
     '@nuxtjs/tailwindcss',
   ],
+
   plugins: [
     { src: '~/plugins/bootstrap.js', mode: 'client' }
   ],
