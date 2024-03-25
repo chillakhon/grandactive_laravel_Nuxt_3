@@ -101,7 +101,22 @@
           </div>
         </div>
 
-        <div class="edit-card-block edit-card-block_mb-md">
+
+        <div v-if="urlSection === 'franshizy'" class="edit-card-block edit-card-block_mb-md">
+          <div class="edit-card-block__title edit-card-block__title_pt-sm edit-card-block__title_required">Сумма инвестиций</div>
+          <div class="edit-card-block__content">
+            <div class="ui-input-wrapper ui-input-wrapper_align-center">
+              <div class="ui-input-range">
+                <input v-model="data.investment_sum_min"   type="number"  placeholder="от" class="ui-input-range__input ui-input-range__input_min" >
+                <input v-model="data.investment_sum_max"  type="number" placeholder="до" class="ui-input-range__input ui-input-range__input_max" >
+              </div>
+              <span class="ui-input-wrapper__input-text">руб</span>
+            </div>
+          </div>
+        </div>
+
+
+        <div v-if="urlSection === 'gotovyj-biznes'"  class="edit-card-block edit-card-block_mb-md">
           <div class="edit-card-block__title edit-card-block__title_pt-sm edit-card-block__title_required">Цена
             бизнеса
           </div>
@@ -113,7 +128,7 @@
           </div>
         </div>
 
-        <div class="edit-card-block edit-card-block_mb-md">
+        <div v-if="urlSection === 'gotovyj-biznes'" class="edit-card-block edit-card-block_mb-md">
           <div class="edit-card-block__title edit-card-block__title_pt-sm edit-card-block__title_required">Форма собственности</div>
           <div class="edit-card-block__content">
             <div class="ui-radio-tabs">
@@ -141,7 +156,7 @@
           </div>
         </div>
 
-        <div class="edit-card-block edit-card-block_mb-md">
+        <div v-if="urlSection !== 'franshizy'" class="edit-card-block edit-card-block_mb-md">
           <div class="edit-card-block__title edit-card-block__title_pt-sm edit-card-block__title_required">Местоположение</div>
           <div class="dropdown-select dropdown-select__category">
             <button class="dropdown__button" @click="toggleDropdownCity" type="button">
@@ -179,8 +194,10 @@ const data = {
   selectedCity: null,
   selectCategory: null,
   selectSubCategory: null,
+  investment_sum_min: null,
+  investment_sum_max: null,
+  investment_size: null
 }
-
 
 //Forma
 const createAdv = async (data) => {
@@ -193,26 +210,33 @@ const createAdv = async (data) => {
     }
   }
 
-  const formData = new FormData()
-  formData.append('name', data.name)
-  formData.append('description', data.description)
-  formData.append('price', data.price)
-  formData.append('type', data.selectedType)
-  formData.append('city', data.selectedCity)
-  formData.append('category', data.selectCategory)
-  formData.append('subcategory', data.selectSubCategory)
-  formData.append('section_id', section_id)
+  const formNew = new FormData()
 
-  for (let i = 0; i < imageFile.value.length; i++) {
-    formData.append('images[]', imageFile.value[i])
+  const formData = {
+    name: data.name,
+    description: data.description,
+    price: data.price,
+    type: data.selectedType,
+    city_id:  data.selectedCity?.id,
+    category_id: data.selectCategory?.id,
+    sub_category_id: data.selectSubCategory?.id,
+    section_id: section_id,
+    investment_sum_min: data.investment_sum_min,
+    investment_sum_max: data.investment_sum_max,
+    investment_size: data.investment_size
   }
 
-   await axios.post('/api/adv/create', formData, {
+  formNew.append('ad', JSON.stringify(formData))
+
+  for (let i = 0; i < imageFile.value.length; i++) {
+    formNew.append('images[]', imageFile.value[i])
+  }
+
+   await axios.post('/api/adv/create', formNew, {
     headers: {
       'Content-Type':'multipart/form-data'
     }
   })
-
 }
 
 //выбрать город
@@ -267,7 +291,6 @@ const toggleDropdown = () => {
 
 const selectCategory = (category) => {
   if(category.subcategory.length > 0){
-    console.log('dsvsd')
     selectSubCategory.value = category.subcategory
   }else {
     selectSubCategory.value = null

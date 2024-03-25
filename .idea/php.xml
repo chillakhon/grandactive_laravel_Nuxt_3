@@ -125,6 +125,8 @@
       <path value="$PROJECT_DIR$/laravel/vendor/phar-io/manifest" />
       <path value="$PROJECT_DIR$/laravel/vendor/phar-io/version" />
       <path value="$PROJECT_DIR$/laravel/vendor/_laravel_idea" />
+      <path value="$PROJECT_DIR$/laravel/vendor/intervention/image" />
+      <path value="$PROJECT_DIR$/laravel/vendor/intervention/gif" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="8.1" />

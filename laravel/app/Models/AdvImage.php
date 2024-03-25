@@ -8,4 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class AdvImage extends Model
 {
     use HasFactory;
+    protected $fillable = [
+        'adv_id',
+        'image_path',
+    ];
 }
