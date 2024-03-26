@@ -25,7 +25,7 @@
                 <div v-if="show" id="profileId" class="profile-dropdown__content profile-dropdown__content_mobile ui-dropdown__content"
                      style="display: flex;">
                   <a class="ui-dropdown__item" href="/lk/wallet">Кошелёк</a>
-                  <a class="ui-dropdown__item" href="/lk/cards">Мои объявления</a>
+                  <nuxt-link class="ui-dropdown__item" to="/adv/my-profile">Мои объявления</nuxt-link>
                   <a class="ui-dropdown__item" href="/lk/lots">Мои лоты</a>
                   <a class="ui-dropdown__item" href="/lk/bets">Ставки</a>
                   <a class="ui-dropdown__item" href="/lk/deals">Сделки</a>

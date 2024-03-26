@@ -12,4 +12,7 @@ class AdvImage extends Model
         'adv_id',
         'image_path',
     ];
+    public function adv(){
+        return $this->belongsTo(Adv::class);
+    }
 }

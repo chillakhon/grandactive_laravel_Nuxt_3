@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('image_path')->nullable();
             $table->timestamps();
 
-            $table->foreign('adv_id')->references('id')->on('advs');
+            $table->foreign('adv_id')->references('id')->on('advs')->onDelete('cascade')->onUpdate('cascade');
         });
     }
 

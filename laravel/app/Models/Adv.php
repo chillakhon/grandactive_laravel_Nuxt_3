@@ -26,4 +26,16 @@ class Adv extends Model
     public function images(){
         return $this->hasMany(AdvImage::class);
     }
+    public function category(){
+        return $this->belongsTo(Category::class);
+    }
+    public function sub_category(){
+        return $this->belongsTo(SubCategory::class);
+    }
+    public function section(){
+        return $this->belongsTo(Section::class);
+    }
+    public function city(){
+        return $this->belongsTo(City::class);
+    }
 }

@@ -11,6 +11,9 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     });
     Route::post('/logout', [\App\Http\Controllers\UserController::class,'logout']);
     Route::post('/create', [\App\Http\Controllers\AdvController::class,'store']);
+    Route::post('/get-ads', [\App\Http\Controllers\AdvController::class,'getAds']);
+    Route::post('/deleteAd', [\App\Http\Controllers\AdvController::class,'delete']);
+
 });
 
 

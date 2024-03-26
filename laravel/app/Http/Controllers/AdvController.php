@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
+use function Psy\debug;
 
 class AdvController extends Controller
 {
@@ -26,6 +27,34 @@ class AdvController extends Controller
 
         return response()->json($ad);
     }
+
+
+    public function getAds(){
+        $user_id = Auth::user()->id;
+        $ads = Adv::where('user_id', $user_id)
+            ->with('images','category','sub_category','section','city')
+            ->get();
+        return response()->json($ads);
+    }
+
+    public function delete(Request $request){
+
+        $ad = Adv::find($request->id);
+        $ad->delete();
+        if ($request->images){
+            foreach ($request->images as $image){
+                $path = 'public/images/' . $image['image_path'];
+                Storage::delete($path);
+            }
+        }
+        $user_id = Auth::user()->id;
+        $ads = Adv::where('user_id', $user_id)
+            ->with('images','category','sub_category','section','city')
+            ->get();
+        return response()->json($ads);
+    }
+
+
 
     /**
      * @param RequestAdv $request

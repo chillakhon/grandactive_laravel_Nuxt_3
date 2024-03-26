@@ -1,13 +1,13 @@
 <template>
 
   <div class="edit-card__page-back edit-card__page-back_mb-lg page-back">
-    <nuxt-link to="/adv" class="page-back__link" >
+    <nuxt-link to="/adv/my-profile" class="page-back__link" >
       <svg fill="none" height="19" viewBox="0 0 19 19" width="19" xmlns="http://www.w3.org/2000/svg">
         <path d="M9.48528 17.9706L1 9.48528M1 9.48528L9.48528 1M1 9.48528H17.9706" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
       </svg>
     </nuxt-link>
     <h1 class="page-back__text">
-      Рекламное объявление
+      Редактирование объявления
     </h1>
   </div>
 
@@ -183,7 +183,7 @@
     </div>
 
     <div class="edit-card-actions">
-      <button class="btn__primary btn-base edit-card-actions__btn-publish" >Опубликовать объявление</button>
+      <button class="btn__primary btn-base edit-card-actions__btn-publish" >Редактировать объявление</button>
     </div>
   </form>
   </div>
@@ -193,14 +193,22 @@
 import AuthUserNew from "~/components /auth/auth-user-new.vue";
 import axios from "axios";
 import {useImageUpload} from "~/ composables/useImageUpload.ts";
+import {useAppStore} from "~/store/index.ts";
 
 const route = useRoute()
-const urlSection = route.params.section
+const urlSection = route.params.update
+const adId= route.params.id
+
+const ads =  useAppStore().adsUser
+
+const advCurrent = ads.find(ad => ad.id == adId)
+
+
 
 const data = {
-  name: null,
-  description: null,
-  price: null,
+  name: advCurrent.name ? advCurrent.name : null,
+  description: advCurrent.description ? advCurrent.description : null,
+  price: advCurrent.price ? advCurrent.price : null,
   selectedType: 'Физ.лицо',
   selectedCity: null,
   selectCategory: null,
@@ -209,6 +217,7 @@ const data = {
   investment_sum_max: null,
   investment_size: null
 }
+console.log(advCurrent)
 
 //Forma
 const createAdv = async (data) => {
@@ -252,7 +261,7 @@ const createAdv = async (data) => {
 }
 
 //выбрать город
-const selectedCity = ref(null)
+const selectedCity = ref(advCurrent.city ? advCurrent.city : null)
 const isDropdownOpenCity = ref(false)
 const selectCity = (city) => {
   selectedCity.value = city
@@ -285,10 +294,10 @@ const deleteImage = (index) => {
 
 const isDropdownOpen = ref(false)
 const isDropdownOpenSub = ref(false)
-const selectedCategory = ref(null)
+const selectedCategory = ref(advCurrent.category ? advCurrent.category : null)
 
 const selectSubCategory = ref(null)
-const selectedSubCategory = ref(null)
+const selectedSubCategory = ref(advCurrent.sub_category ? advCurrent.sub_category : null)
 
 const SubCategory = (category) => {
   selectedSubCategory.value = category
