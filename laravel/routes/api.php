@@ -13,9 +13,16 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('/create', [\App\Http\Controllers\AdvController::class,'store']);
     Route::post('/get-ads', [\App\Http\Controllers\AdvController::class,'getAds']);
     Route::post('/deleteAd', [\App\Http\Controllers\AdvController::class,'delete']);
-
+    Route::post('/update/{id}', [\App\Http\Controllers\AdvController::class,'update']);
 });
 
+Route::post('/ads', [\App\Http\Controllers\AdvController::class,'index']);
+
+Route::get('/ad/{id}', [\App\Http\Controllers\AdvController::class,'getAd']);
+Route::get('/popular-ads', [\App\Http\Controllers\AdvController::class,'popular']);
+Route::get('/new-ads', [\App\Http\Controllers\AdvController::class,'newAds']);
+
+Route::get('/image/{url}', [\App\Http\Controllers\ImageController::class,'getImagePath']);
 
 Route::post('/register', [\App\Http\Controllers\UserController::class,'store']);
 Route::post('/login', [\App\Http\Controllers\UserController::class,'login']);

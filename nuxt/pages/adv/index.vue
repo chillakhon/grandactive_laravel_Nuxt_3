@@ -10,7 +10,7 @@
             <div class="ca-block__title ca-block__title_cards">Доска объявлений</div>
             <div class="ca-block__tiles row">
               <div class="col-6 col-sm-6 col-xxl-4 col-xl-4 col-lg-4 col-md-4" v-for="item in section">
-              <nuxt-link rel="nofollow" class="ca-block__tile ca-tile" :to="`/adv/${item.urlName}/new`">
+              <nuxt-link rel="nofollow" class="ca-block__tile ca-tile" :to="`/adv/${item?.urlName}/new`">
                 <div class="ca-tile__img">
                   <img :src="item.img" :alt="item.name">
                 </div>

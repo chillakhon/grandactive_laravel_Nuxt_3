@@ -130,21 +130,9 @@ a,a:hover {
     margin: 0 auto
 }
 
-.content {
-    width: 1048px
-}
 
-.content__big {
-    width: calc(100% - 215px)
-}
 
-.content-wrapper {
-    padding-top: 40px;
-    display: flex;
-    -webkit-box-pack: justify;
-    -ms-flex-pack: justify;
-    justify-content: space-between
-}
+
 
 .hr,.hr__thin {
     border: none;
@@ -278,14 +266,7 @@ a,a:hover {
     top: 0!important
 }
 
-.link_right {
-    display: flex;
-    width: -webkit-fit-content;
-    width: -moz-fit-content;
-    width: fit-content;
-    margin-right: 0;
-    margin-left: auto
-}
+
 
 .link_xs {
     font-size: 12px;
@@ -538,15 +519,7 @@ button,input,optgroup,select,textarea {
     display: none
 }
 
-.btn-mini {
-    background: #E8F2FC;
-    color: #1976D2;
-    border-radius: 4px;
-    padding: 0 4px;
-    width: -webkit-fit-content;
-    width: -moz-fit-content;
-    width: fit-content
-}
+
 
 a.btn-place-bet {
     display: flex;
@@ -618,14 +591,7 @@ a.btn-place-bet.btn__outline-success:hover {
     color: grey
 }
 
-.btn-link {
-    display: flex;
-    padding: 8px 16px;
-    cursor: pointer;
-    width: -webkit-fit-content;
-    width: -moz-fit-content;
-    width: fit-content
-}
+
 
 .btn-link:hover {
     color: inherit

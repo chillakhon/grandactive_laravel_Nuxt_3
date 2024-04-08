@@ -12,9 +12,8 @@
   </div>
 
   <auth-user-new/>
-
   <div class="section">
-  <form  class="form" @submit.prevent="createAdv(data)">
+  <form  class="form" @submit.prevent="updateAdv(data,advCurrent.id)">
     <div class="edit-card-section">
       <div class="edit-card-section__content">
         <div class="edit-card-block edit-card-block_card-sections">
@@ -60,7 +59,6 @@
             </div>
           </div>
         </div>
-
         <div class="edit-card-block edit-card-block_mb-lg">
           <div class="edit-card-block__title edit-card-block__title_pt-sm edit-card-block__title_required">Описание</div>
           <textarea v-model="data.description"  class="ui-textarea ui-textarea_tinymce ui-textarea_w100" name="Description">
@@ -73,11 +71,18 @@
             <div class="edit-card-block__upload-files upload-files">
               <div class="upload-files__previews">
                 <div class='fff' >
+
                   <div class="image_Url"
                        v-for="(image, index) in imageUrl" :key="index">
                     <button type="button" class="button_btt" @click="deleteImage(index)">x</button>
                     <img class="img_btn" :src="image" alt="">
                   </div>
+
+                  <div class="image_Url" v-for="(imageCurrent, index)  in advCurrent.images" :key="index">
+                    <button type="button" class="button_btt" @click="removeImage(index)">x</button>
+                    <img  class="img_btn" :src="`http://127.0.0.1:8000/storage/images/${ imageCurrent.image_path}`" alt="">
+                  </div>
+
                   <label class="upload-files__btn upload-files-btn ">
                     <input
                         class="upload-files__input"
@@ -100,7 +105,6 @@
             </div>
           </div>
         </div>
-
 
         <div v-if="urlSection === 'investitsii' || urlSection === 'investory' || urlSection === 'ishchu-partnera' " class="edit-card-block edit-card-block_mb-md">
           <div class="edit-card-block__title edit-card-block__title_pt-sm">Размер инвестиций</div>
@@ -201,8 +205,11 @@ const adId= route.params.id
 
 const ads =  useAppStore().adsUser
 
-const advCurrent = ads.find(ad => ad.id == adId)
+const advCurrent = ads?.find(ad => ad.id == adId)
 
+const removeImage = (index) => {
+  advCurrent.images.splice(index, 1)
+}
 
 
 const data = {
@@ -210,17 +217,16 @@ const data = {
   description: advCurrent.description ? advCurrent.description : null,
   price: advCurrent.price ? advCurrent.price : null,
   selectedType: 'Физ.лицо',
-  selectedCity: null,
-  selectCategory: null,
-  selectSubCategory: null,
+  selectedCity: advCurrent.city ? advCurrent.city : null,
+  selectCategory: advCurrent.category ? advCurrent.category : null,
+  selectSubCategory: advCurrent.sub_category ? advCurrent.sub_category : null,
   investment_sum_min: null,
   investment_sum_max: null,
   investment_size: null
 }
-console.log(advCurrent)
 
 //Forma
-const createAdv = async (data) => {
+const updateAdv = async (data, id) => {
   let section_id = ''
 
   for (let i = 0; i < section.length; i++) {
@@ -247,17 +253,20 @@ const createAdv = async (data) => {
   }
 
   formNew.append('ad', JSON.stringify(formData))
+  formNew.append('imagesCurrent', JSON.stringify(advCurrent.images))
 
   for (let i = 0; i < imageFile.value.length; i++) {
     formNew.append('images[]', imageFile.value[i])
   }
 
-   await axios.post('/api/create', formNew, {
+   const ads = await axios.post(`/api/update/${id}`, formNew, {
     headers: {
       'Content-Type':'multipart/form-data'
     }
   })
-  navigateTo('/adv/my-profile')
+  await useRouter().replace('/adv/my-profile')
+  useAppStore().adsUser = ads.data
+  useAppStore().flash = true
 }
 
 //выбрать город
@@ -341,10 +350,12 @@ const section = await axios.get('api/section').then(res => {
 
 .button_btt{
   position: relative;
-  bottom: 40px;
-  left: 180px;
+  bottom: 40%;
+  left: 100%;
   color: #ff0000;
+  max-width: 25%;
 }
+
 .fff{
   display: flex;
   margin: 10px;
@@ -358,7 +369,7 @@ const section = await axios.get('api/section').then(res => {
 .image_Url{
   max-width: 25%;
   display: flex;
-  margin: 10px;
+  margin: 15px;
 
 }
 .img_btn{

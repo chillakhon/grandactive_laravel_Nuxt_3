@@ -13,7 +13,7 @@
 
   <auth-user-new/>
 
-  <div class="section">
+  <div class="section" :class="{'disabled-element' : !useAppStore().user}">
   <form  class="form" @submit.prevent="createAdv(data)">
     <div class="edit-card-section">
       <div class="edit-card-section__content">
@@ -30,10 +30,12 @@
           </div>
         </div>
 
+
         <div class="edit-card-block edit-card-block_mb-sm">
           <div class="edit-card-block__title edit-card-block__title_pt-sm edit-card-block__title_required">Название</div>
           <div class="edit-card-block__content">
-            <input v-model="data.name"  name="title" class="ui-input ui-input_w100" placeholder="Введите название" type="text">
+            <input v-model="data.name"  name="title" class="ui-input ui-input_w100" placeholder="Введите название" type="text" >
+            <span v-if="nameError" class="error-message">{{nameError}}</span>
           </div>
         </div>
 
@@ -193,9 +195,12 @@
 import AuthUserNew from "~/components /auth/auth-user-new.vue";
 import axios from "axios";
 import {useImageUpload} from "~/ composables/useImageUpload.ts";
+import {useAppStore} from "~/store/index.ts";
 
 const route = useRoute()
 const urlSection = route.params.section
+
+const nameError = ref(null)
 
 const data = {
   name: null,
@@ -219,6 +224,10 @@ const createAdv = async (data) => {
     if (sections.urlName === urlSection){
       section_id = sections.id
     }
+  }
+  if (!data.name){
+    nameError.value = 'Это поле обязательно для заполнения'
+    return
   }
 
   const formNew = new FormData()
@@ -248,7 +257,8 @@ const createAdv = async (data) => {
       'Content-Type':'multipart/form-data'
     }
   })
-  navigateTo('/adv/my-profile')
+  await useRouter().replace('/adv/my-profile')
+  window.location.reload()
 }
 
 //выбрать город
@@ -330,6 +340,38 @@ const section = await axios.get('api/section').then(res => {
 
 <style scoped>
 
+
+@media  only screen and (max-width:990px) {
+  .section[data-v-0f9733ca]{
+    max-width: 100%;
+  }
+}
+@media  only screen and (max-width:720px) {
+  .section[data-v-0f9733ca]{
+    padding: 0;
+  }
+  .edit-card-block {
+    flex-direction: column;
+    max-width: 100%;
+  }
+  .edit-card-block__content {
+    width: 100%;
+  }
+  .section[data-v-0f9733ca]  {
+    padding: 0;
+    margin: 2px;
+  }
+  .edit-card-block {
+  }
+}
+
+
+
+.error-message{
+  color: red;
+  font-size: 12px;
+}
+
 .button_btt{
   position: relative;
   bottom: 40px;
@@ -364,10 +406,13 @@ const section = await axios.get('api/section').then(res => {
 }
 
 .section{
-  border: 1px solid red;
   padding: 20px;
   margin: 20px;
   max-width: 70%;
+}
+.disabled-element {
+  pointer-events: none;
+  opacity: 0.5;
 }
 
 

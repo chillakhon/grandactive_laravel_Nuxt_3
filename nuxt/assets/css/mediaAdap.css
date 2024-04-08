@@ -1,0 +1,24 @@
+@media only screen and (max-width:1000px) {
+    .catalog-cards-ad[data-v-f0578c2d]{
+        max-width: 100%;
+        margin: 0 0 0 0;
+    }
+    .category_modal[data-v-efa81297]{
+        display: block;
+    }
+}
+@media only screen and (max-width:1000px) {
+    .cart-container[data-v-efa81297]{
+        justify-content: space-around;
+    }
+}
+
+@media only screen and (max-width:769px) {
+    .cart-container[data-v-efa81297]{
+        justify-content: space-around;
+    }
+    .card_img[data-v-efa81297]{
+        width: 300px;
+    }
+}
+

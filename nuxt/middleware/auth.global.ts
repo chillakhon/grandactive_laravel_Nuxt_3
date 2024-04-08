@@ -4,14 +4,16 @@ import {useAppStore} from "~/store";
 export default defineNuxtRouteMiddleware(async (to, from) => {
 
     try {
-        const adsUser = await axios.post('/api/get-ads')
-        if (adsUser) {
-            useAppStore().adsUser = adsUser.data
+        const token  = useCookie('token').value
+        console.log(token)
+        if (token) {
+            if (!useAppStore().user) {
+                const user = await axios.get('/api/user').then(response => {
+                    useAppStore().user = response.data;
+                })
+            }
         }
-        const user = await axios.get('/api/user')
-        if (user.data) {
-            useAppStore().user = user.data
-        }
+
     }catch (error) {
         // @ts-ignore
         if (error.response?.status === 401){

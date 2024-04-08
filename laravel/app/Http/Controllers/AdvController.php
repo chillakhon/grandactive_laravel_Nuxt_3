@@ -13,8 +13,39 @@ use function Psy\debug;
 
 class AdvController extends Controller
 {
-    public function index(){
-        return 'nu';
+    public function index(Request $request){
+        $ads = Adv::with('images','category','sub_category','section','city');
+
+        if($request->has('section_id')){
+            $ads = $ads->where('section_id',$request->section_id);
+        }
+        if($request->has('category_id')){
+            $ads = $ads->where('category_id',$request->category_id);
+        }
+
+        if($request->has('sub_category_id')){
+            $ads = $ads->where('sub_category_id',$request->sub_category_id);
+        }
+
+        return response()->json($ads->get());
+    }
+
+    public function getAd(Request $request) {
+        $ad = Adv::with('images','category','sub_category','section','city','user')->find($request->id);
+        $views = $ad->where('id',$request->id)->get('views');
+        $views = $views[0]->views + 1;
+        $ad->where('id',$request->id)->update(['views' => $views]);
+        return response()->json($ad);
+    }
+
+    public function popular () {
+        $ads = Adv::with('images','category','sub_category','section','city')->orderBy('views','desc')->take(15)->get();
+        return response()->json($ads);
+    }
+
+    public function newAds() {
+        $ads = Adv::with('images','category','sub_category','section','city')->orderBy('created_at','desc')->take(15)->get();
+        return response()->json($ads);
     }
 
     public function store(RequestAdv $request){
@@ -55,13 +86,50 @@ class AdvController extends Controller
     }
 
 
+    public function update(Request $request, $id)
+    {
+        $ad = Adv::find($id);
+        $imageTable = $ad->images;
+        $imagePaths = $imageTable->pluck('image_path')->toArray();
 
-    /**
-     * @param RequestAdv $request
-     * @param $adv
-     * @return void
-     */
-    public function uploadImage(RequestAdv $request, $adv): void
+        $imageCurrent = array_column( json_decode($request->imagesCurrent, true),'image_path');
+
+        $toDelete = array_diff($imagePaths, $imageCurrent);
+            foreach ($toDelete as $path) {
+                Storage::delete('public/images/' . $path);
+                $imageToDelete = $imageTable->where('image_path', $path)->first();
+                if ($imageToDelete) {
+                    $imageToDelete->delete();
+                }
+            }
+            $this->uploadImage($request,$ad);
+
+            $adToUpdate = json_decode($request->ad,true);
+            $ad->update($adToUpdate);
+
+        $user_id = Auth::user()->id;
+        $ads = Adv::where('user_id', $user_id)
+            ->with('images','category','sub_category','section','city')
+            ->get();
+            return response()->json($ads);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    private function uploadImage($request, $adv): void
     {
         if ($request->hasFile('images')) {
             $manager = new ImageManager(new Driver());

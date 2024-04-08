@@ -29,6 +29,7 @@
 <script setup>
 import axios from "axios";
 import {useAppStore} from "~/store/index.ts";
+import {useAuth} from "~/ composables/user/useAuth.ts";
 
 const user = ref([
     {
@@ -38,17 +39,24 @@ const user = ref([
     }
 ])
 
+
+
 const register = async (user) => {
   await axios.post('api/register',{
     name: user.name,
     email: user.email,
     password: user.password
   }).then(res => {
-    console.log(res)
+    const cookie = useCookie('token')
+    if (cookie){
+      cookie.value = null
+    }
+    cookie.value = res.data.token
+    useAppStore().user = res.data.user
+    navigateTo('/')
   })
 }
 
-console.log(useAppStore().user)
 
 </script>
 
