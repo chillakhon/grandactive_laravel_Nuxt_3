@@ -17,6 +17,14 @@
 
         <div class="content_block_header">
 
+          <div v-if="useAppStore().flash.success" id="flash" class="alert alert-success d-flex align-items-center" role="alert">
+            <font-awesome-icon :icon="['fas', 'check']" />
+            <div >
+              Ваше сообщение успешно отправлено!
+            </div>
+          </div>
+
+
           <h1 class="card-title">{{ ad.name }}</h1>
 
           <ul class="breadcrumbs">
@@ -80,12 +88,21 @@
             <div v-else class="card-price_not ">Не указан</div>
           </div>
 
-          <button type="button" data-bs-toggle="modal" data-bs-target="#myModal" class="nuxt_button">
-            <div class="  content_info_contact_title">
-              <span> Показать Контакты</span>
-            </div>
-          </button>
-          <ModalForContact :ad = 'ad'/>
+          <div class="content_for_modal">
+            <button type="button" data-bs-toggle="modal" data-bs-target="#myModal" class="nuxt_button">
+              <div class="content_info_contact_title">
+                <span> Показать Контакты</span>
+              </div>
+            </button>
+            <ModalForContact :ad='ad'/>
+
+            <button type="button" data-bs-toggle="modal"  :data-bs-target="` ${ useAppStore().user ? '#modal_for_message' : '#exampleModal'  } `" class="modal_button_for_message">
+              <div class="content_info_contact_message">
+                <span>Нописать сообщение</span>
+              </div>
+            </button>
+            <ModalForMessage :ad="ad"/>
+          </div>
         </div>
 
         <div v-if="ad.city" class="city">
@@ -146,6 +163,7 @@ import axios from "axios";
 import {useAppStore} from "~/store/index.ts";
 import {date} from "~/ composables/date.js";
 import ModalForContact from "~/components /ModalForContact.vue";
+import ModalForMessage from "~/components /ModalForMessage.vue";
 const APP_URL = useRuntimeConfig().public.APP_URL
 const route = useRoute().params
 
@@ -154,6 +172,17 @@ const ad = await axios.get(`api/ad/${route.id}`).then(res => {
 })
 const { formattedDatetime } = date(ad.created_at)
 
+
+watch(
+    () => useAppStore().flash.success, (newValue, oldValue) => {
+      if (newValue) {
+        console.log('jb')
+        setTimeout(() => {
+          useAppStore().flash.success = false
+        }, 3500)
+      }
+    }
+)
 
 
 onMounted(() => {
@@ -170,12 +199,6 @@ const imageClick = (e) => {
   if (popUpClose == e.target){
     document.querySelector('.pop-up').style.display = 'none'
   }
-
-  //document.querySelector('.pop-up').style.display = 'block'
-//   document.querySelector('.pop-up').style.opacity = '1'
-//   document.querySelector('.pop-up').style.zIndex = '1000'
-//   document.querySelector('.pop-up img').src = `${APP_URL}/api/image/${ad.images[0]?.image_path}`
-//   document.querySelector('.pop-up img').alt = ad.name
 }
 
 
@@ -184,10 +207,18 @@ const imageClick = (e) => {
 <style  scoped>
 
 
+.content_for_modal{
+  display: flex;
+  flex-direction: column;
+  margin-right: 20px;
+}
+
 .content_block_imag{
   width: 37%;
   height: 100%;
   overflow: hidden;
+  border: 3px solid #ffffff;
+  border-radius: 10px;
 }
 
 .content_block_imag img {
@@ -309,6 +340,11 @@ const imageClick = (e) => {
   cursor: pointer;
 }
 
+.modal_button_for_message :hover {
+  background-color: #13e109;
+  cursor: pointer;
+}
+
 .content_info_data_item{
   margin-right: 14%;
 }
@@ -316,8 +352,17 @@ const imageClick = (e) => {
 .content_info_contact_title{
   margin-top: 4%;
   background-color: #B01F7E;
-  border-radius: 4px;
+  border-radius: 10px;
   padding: 10px 20px;
+}
+
+.content_info_contact_message{
+  margin-top: 4%;
+  background-color: #1fb021;
+  border-radius: 10px;
+  padding: 10px 20px;
+  color: white;
+  font-weight: 600;
 }
 
 
@@ -345,7 +390,9 @@ const imageClick = (e) => {
 }
 
 .content_info_price_contact{
-  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 
@@ -365,7 +412,6 @@ const imageClick = (e) => {
 .content{
   width: 100%;
   height: 100%;
-  border: 1px solid #ffd600;
   max-width: 85%;
   margin-left: 2%;
   margin-top: -4%;

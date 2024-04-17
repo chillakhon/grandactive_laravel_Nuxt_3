@@ -9,14 +9,23 @@
       </div>
 
 
-      <div v-if="useAppStore().flash" id="flash" class="alert alert-success d-flex align-items-center" role="alert">
+      <div v-if="useAppStore().flash.update" id="flash" class="alert alert-success d-flex align-items-center" role="alert">
         <font-awesome-icon :icon="['fas', 'check']" />
         <div >
-          ваше объявления успешно обновлено!
+          Ваше объявления успешно обновлено!
+        </div>
+      </div>
+      {{useAppStore().flash.update}}
+      <div v-if="useAppStore().flash.create" id="flash" class="alert alert-success d-flex align-items-center" role="alert">
+        <font-awesome-icon :icon="['fas', 'check']" />
+        <div>
+          Ваше объявления успешно добавлено!
         </div>
       </div>
 
       <div v-for="item in ads"  class="user-cards__list">
+
+
         {{item.id}}
         <div class="user-card">
           <nuxt-link  class="user-card__img " :to="`/${item.section?.urlName}/${item.category?.url_name}/ad/${item.id}`">
@@ -36,7 +45,6 @@
                   <span class="user-card-price__currency">руб</span>
                 </div>
               </div>
-
               <div class="user-card__actions user-card__actions_desktop">
                 <nuxt-link :to="`/adv/my-profile/${item.section?.urlName}/${item.id}`" class="user-card__action" >Редактировать</nuxt-link>
                 <button type="submit" class="user-card__action" @click="deleteAd(item)" >Удалить</button>
@@ -77,22 +85,26 @@ const ads = computed(() => useAppStore().adsUser);
 
 const deleteAd = async (ad) => {
   if ( confirm('Вы уверены, что хотите удалить этот элемент?')){
-    await axios.post('api/deleteAd', ad)
-    useAppStore().updateAdsUser(ad)
-    await useAppStore().fetchAdsUser()
+    await axios.post('api/deleteAd', ad).then(result => {
+      useAppStore().adsUser = result.data
+      useAppStore().flash = {}
+      useAppStore().flash.delete = true
+    })
   }
 }
 
 
 watch(() => {
-  setTimeout(() =>{
-    const flash = document.querySelector('#flash')
-    flash.style.opacity = 0
-  }, 2000)
-  setTimeout(() =>{
-    const flash = document.querySelector('#flash')
-    flash.remove()
-  }, 2800)
+
+    setTimeout(() => {
+      const flash = document.querySelector('#flash')
+      flash.style.opacity = 0.5
+    }, 4000)
+    setTimeout(() => {
+      const flash = document.querySelector('#flash')
+      flash.remove()
+    }, 4800)
+
 })
 
 </script>

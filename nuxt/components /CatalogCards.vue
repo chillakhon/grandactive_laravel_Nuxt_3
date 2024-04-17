@@ -1,9 +1,4 @@
 <template>
-  <div class="input-group">
-    <input v-model="searchValue" type="text" placeholder="Поиск..." class="form-control">
-  </div>
-
-
   <ul  class="breadcrumbs catalog-content__breadcrumbs">
     <li class="breadcrumb__element" >
       <nuxt-link class="breadcrumb__element-link" to="/">
@@ -50,41 +45,52 @@
         К сожалению, в данном разделе товар, который вы искали, отсутствует.
     </div>
 
-    <div class="cart_item">
-      <nuxt-link  v-for="ad in filteredAds"  class="short-card short-card_large" >
-        <div class="short-card__img">
-          <picture>
-            <img :src="`${APP_URL}/api/image/${ad.images[0]?.image_path}`" class="card-img-top"
-                 :alt="ad.name">
-          </picture>
-        </div>
-        <div class="short-card__body">
-          <div class="short-card__title short-card__title_bold" >{{ad.name}}</div>
-          <div class="short-card__wrapper">
-            <div class="short-card__data short-card-data">
-              <div class="short-card-data__items">
-                <div class="short-card-data__item">
-                  <div v-if="ad.price" class="short-card-data__value">
-                    <div class="short-card-data__value-name">Цена</div>
-                    <div class="short-card-data__price">
-                      {{ad.price?.toLocaleString()}}
-                    </div>
-                    <span class="short-card-data__currency">руб</span>
-                  </div>
-                  <span v-else class="short-card-data__currency">Цена не указана</span>
 
-                </div>
-                <div class="short-card-data__item short-card-data__item_list short-card-data__item_long short-card-data__item_row">
-                  <div class="short-card-data__value short-card-data__value_views short-card-views" >
-                    <font-awesome-icon :icon="['far', 'eye']" class="views_icon"/>
-                    <div class="short-card-views__count">{{ad.views}}</div>
+    <div class="cart-container-input">
+
+      <div class="input-group">
+        <input v-model="searchValue" type="text" placeholder="Поиск..." class="form-control">
+      </div>
+
+      <div class="cart_item">
+
+        <nuxt-link v-for="ad in filteredAds" :to="`/${ad.section?.urlName}/${ad.category?.url_name}/ad/${ad.id}`"
+                   class="short-card short-card_large">
+          <div class="short-card__img">
+            <picture>
+              <img :src="`${APP_URL}/api/image/${ad.images[0]?.image_path}`" class="card-img-top"
+                   :alt="ad.name">
+            </picture>
+          </div>
+          <div class="short-card__body">
+            <div class="short-card__title short-card__title_bold">{{ ad.name }}</div>
+            <div class="short-card__wrapper">
+              <div class="short-card__data short-card-data">
+                <div class="short-card-data__items">
+                  <div class="short-card-data__item">
+                    <div v-if="ad.price" class="short-card-data__value">
+                      <div class="short-card-data__value-name">Цена</div>
+                      <div class="short-card-data__price">
+                        {{ ad.price?.toLocaleString() }}
+                      </div>
+                      <span class="short-card-data__currency">руб</span>
+                    </div>
+                    <span v-else class="short-card-data__currency">Цена не указана</span>
+
+                  </div>
+                  <div
+                      class="short-card-data__item short-card-data__item_list short-card-data__item_long short-card-data__item_row">
+                    <div class="short-card-data__value short-card-data__value_views short-card-views">
+                      <font-awesome-icon :icon="['far', 'eye']" class="views_icon"/>
+                      <div class="short-card-views__count">{{ ad.views }}</div>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      </nuxt-link>
+        </nuxt-link>
+      </div>
     </div>
 
   </div>
@@ -200,10 +206,12 @@ const visiblePageNumbers = computed(() => {
   }
 }
 
+.cart-container-input{
+  display: flex;
+  flex-direction: column;
+}
 
 .input-group{
-  float: right;
-  margin-right: 40px;
   width: 300px;
 }
 
@@ -246,7 +254,6 @@ nav{
   margin: 10px;
   height: 35px;
   border-radius: 10px;
-
 }
 
 .btnn{
@@ -263,9 +270,6 @@ nav{
 }
 .btnn:hover{
   background-color: greenyellow;
-}
-.input_for_pagination{
-
 }
 
 .category_modal{
@@ -294,8 +298,8 @@ nav{
   cursor: pointer;
   border-radius: 10px;
   margin-left: 0;
-  margin-right: 5px;
-  width: 250px;
+  margin-right: 10px;
+  width: 270px;
 }
 .short-card__img img{
   display: block;

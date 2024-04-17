@@ -252,13 +252,15 @@ const createAdv = async (data) => {
     formNew.append('images[]', imageFile.value[i])
   }
 
-   await axios.post('/api/create', formNew, {
+   const ads = await axios.post('/api/create', formNew, {
     headers: {
       'Content-Type':'multipart/form-data'
     }
   })
+  useAppStore().adsUser = ads.data
+  useAppStore().flash = {}
+  useAppStore().flash.create = true
   await useRouter().replace('/adv/my-profile')
-  window.location.reload()
 }
 
 //выбрать город

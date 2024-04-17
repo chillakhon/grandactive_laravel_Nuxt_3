@@ -16,8 +16,6 @@
 <script setup>
 onMounted(() => {
 
-
-
   document.querySelector('.next_button').addEventListener('click',()=>{
     const swiper = document.getElementById('swiper-container')
   })

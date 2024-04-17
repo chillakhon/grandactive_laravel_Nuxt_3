@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\RequestAdv;
 use App\Models\Adv;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -28,6 +29,10 @@ class AdvController extends Controller
         }
 
         return response()->json($ads->get());
+    }
+    public function getUsers(){
+        $users = User::get();
+        return response()->json($users);
     }
 
     public function getAd(Request $request) {
@@ -55,8 +60,8 @@ class AdvController extends Controller
         $ad = Adv::create($ad);
 
         $this->uploadImage($request, $ad);
-
-        return response()->json($ad);
+        $ads = $this->getAdsUser();
+        return response()->json($ads);
     }
 
 
@@ -107,11 +112,8 @@ class AdvController extends Controller
             $adToUpdate = json_decode($request->ad,true);
             $ad->update($adToUpdate);
 
-        $user_id = Auth::user()->id;
-        $ads = Adv::where('user_id', $user_id)
-            ->with('images','category','sub_category','section','city')
-            ->get();
-            return response()->json($ads);
+        $ads = $this->getAdsUser();
+        return response()->json($ads);
     }
 
 
@@ -124,8 +126,10 @@ class AdvController extends Controller
 
 
 
-
-
+    private function getAdsUser() {
+        $user_id = Auth::user()->id;
+        return  Adv::where('user_id', $user_id)->with('images','category','sub_category','section','city')->get();
+    }
 
 
 

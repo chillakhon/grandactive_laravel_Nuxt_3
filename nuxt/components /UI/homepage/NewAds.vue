@@ -9,11 +9,9 @@
             :slidesPerView= colPages
             :centeredSlides="false"
             :spaceBetween="30"
-            :pagination="{
-        type: 'fraction',
-      }"
             :navigation="true"
             :virtual="true"
+            :loop="true"
             class="mySwiper"
             @swiper="setSwiperRef"
         >
@@ -25,34 +23,31 @@
               <nuxt-link :to="`/${ad.section?.urlName}/${ad.category?.url_name}/ad/${ad.id}`">
                 <img :src="`${APP_URL}/api/image/${ad.images[0]?.image_path}`" class="card-img-top" :alt="ad.name">
               </nuxt-link>
+              <hr style="margin: 0"/>
               <div class="card_swiper">
-                <div class="card_title_ ">{{ ad.name }}</div>
+                <div class="card_title_ ">{{ ad?.name }}</div>
 
-                <div v-if="ad.price" class="card-price">
-                  <div class="card-price-amount">
-                    {{ ad.price?.toLocaleString('ru-RU') }} <span> руб </span>
-                  </div>
+                <div v-if="ad.price" class="card-price-amount">
+                  {{ ad.price?.toLocaleString('ru-RU') }} <span> руб </span>
                 </div>
 
-                <div v-else class="card-price">
-                  <div class="card-price-amount">
-                     <span> Цена не указана </span>
-                  </div>
+
+                <div v-else class="card-price-amount">
+                  <span> Цена не указана </span>
                 </div>
 
 
                 <div class="card-info">
-                  <div v-if="ad.category" class="card-info-item-title">{{ad.category?.name}}</div>
-                  <div v-else class="card-info-item-title">Не выброна Категории</div>
+                  <div class="card-info-item-title">{{ad.category?.name}}</div>
+
                   <div class="card-info-views">
                     <div class="card-info-item-title">
-                      <font-awesome-icon :icon="['fas', 'eye']" /> {{ad.views}}
+                      <font-awesome-icon :icon="['fas', 'eye']" /> {{ad?.views}}
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-
           </swiper-slide>
         </swiper>
 
@@ -126,46 +121,51 @@ export default {
 
 <style scoped>
 
-.homepage__title{
-  margin-top: 30px;
+.main-container{
+  margin-top: 5%;
 }
 .swiper-cart-container{
   width: 100%;
   height: 100%;
+  border: 1px solid #c5c5c5;
+  border-radius: 10px;
+  background-color: white;
+  overflow: hidden;
+  cursor: pointer;
+}
+.swiper-cart-container:hover{
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+}
+
+.card_swiper{
+  display: flex;
+  flex-direction: column;
+  margin: 10px;
 }
 .card_title_{
   display: flex;
-  justify-content: left;
-  font-size: 20px;
-  font-weight: 600;
-  padding: 15px 15px 10px 10px;
-}
-.card-price{
-  display: flex;
-  justify-content: left;
-  padding-left: 10px;
-  margin-top: 15px;
+  height: 50px;
+  font-size: 17px;
+  color: #5b5b5b;
+
 }
 .card-price-amount{
-  font-size: 20px;
-  font-weight: 600;
-  color: #1976D2;
+  display: flex;
+  font-size: 17px;
+  color: #4f72e7;
+  font-weight: 500;
 }
-.card-price-amount span{
-  font-size: 15px;
-  color: #5b5b5b;
+.card-price-amount span {
+  color: #8f8f8f;
+  font-size: 14px;
+  margin-left: 5px;
 }
-
 .card-info{
   display: flex;
   justify-content: space-between;
-  padding-left: 10px;
-  margin-top: 20px;
-  margin-bottom: 20px;
-  color: #5b5b5b;
-}
-.card-info-item-title{
-  margin-right: 10px;
+  padding-top: 20px;
+  font-size: 16px;
+  color: #656565;
 }
 
 </style>

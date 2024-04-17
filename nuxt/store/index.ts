@@ -12,16 +12,10 @@ export const useAppStore = defineStore({
         filter_params: {},
         popularAds: null,
         newAds: null,
-        flash: false,
+        flash: {},
+        users: null,
+        message: null
     }),
-    actions: {
-        updateAdsUser(ad) {
-            this.adsUser = this.adsUser.filter((item) => item.id !== ad.id)
 
-        },
-        adAdsUser(ad) {
-            this.adsUser.push(ad)
-        }
-    }
 })
 

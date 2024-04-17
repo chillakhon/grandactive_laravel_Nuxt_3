@@ -14,6 +14,9 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('/get-ads', [\App\Http\Controllers\AdvController::class,'getAds']);
     Route::post('/deleteAd', [\App\Http\Controllers\AdvController::class,'delete']);
     Route::post('/update/{id}', [\App\Http\Controllers\AdvController::class,'update']);
+    Route::get('/users', [\App\Http\Controllers\AdvController::class,'getUsers']);
+    Route::get('/messages', [\App\Http\Controllers\Message::class,'index']);
+    Route::post('/createMessage', [\App\Http\Controllers\Message::class,'store']);
 });
 
 Route::post('/ads', [\App\Http\Controllers\AdvController::class,'index']);

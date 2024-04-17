@@ -266,7 +266,8 @@ const updateAdv = async (data, id) => {
   })
   await useRouter().replace('/adv/my-profile')
   useAppStore().adsUser = ads.data
-  useAppStore().flash = true
+  useAppStore().flash = {}
+  useAppStore().flash.update = true
 }
 
 //выбрать город

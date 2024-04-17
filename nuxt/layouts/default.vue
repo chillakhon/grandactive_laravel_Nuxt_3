@@ -27,6 +27,7 @@
                 <div v-if="show" id="profileId" class="profile-dropdown__content profile-dropdown__content_mobile ui-dropdown__content"
                      style="display: flex;">
                   <nuxt-link class="ui-dropdown__item" to="/adv/my-profile">Мои объявления</nuxt-link>
+                  <nuxt-link class="ui-dropdown__item" to="/message/message-users">Сообщение</nuxt-link>
 
                   <div class="ui-dropdown__divider"></div>
                   <nuxt-link @click="logout" class="ui-dropdown__item">Выйти</nuxt-link>
@@ -63,7 +64,7 @@ import DropdownForNav from "~/components /DropdownForNav.vue";
 const show = ref(false)
 const user = useAppStore().user
 const showProfile = () => {
-  show.value =!show.value
+  show.value = !show.value
 }
 
 const logout = async () => {
@@ -82,20 +83,16 @@ const logout = async () => {
 }
 
 onMounted(() => {
+  document.addEventListener('click' , (e) => {
+    const profile =  document.querySelector('#img_avatar')
+    const profileId =  document.querySelector('.profile-dropdown__name')
+    if (profile != e.target) {
+      show.value = false
+    }
+  })
+})
 
-  document.addEventListener('click', handleClickOutside);
-});
 
-const handleClickOutside = (event) => {
-  const clickedElement = event.target;
-  const img = document.getElementById('img_avatar')
-  const profileDropdownName = document.getElementsByClassName('profile-dropdown__name')[0];
-  if (clickedElement === img || profileDropdownName ) {
-  }else {
-    show.value = false
-  }
-
-}
 
 
 </script>
