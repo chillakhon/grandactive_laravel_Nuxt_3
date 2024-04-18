@@ -19,6 +19,8 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('/createMessage', [\App\Http\Controllers\Message::class,'store']);
 });
 
+
+Route::post('/messageChat', [\App\Http\Controllers\Message::class,'chatMessage']);
 Route::post('/ads', [\App\Http\Controllers\AdvController::class,'index']);
 
 Route::get('/ad/{id}', [\App\Http\Controllers\AdvController::class,'getAd']);

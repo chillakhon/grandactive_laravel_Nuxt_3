@@ -126,6 +126,9 @@
       <excludeFolder url="file://$MODULE_DIR$/laravel/storage/framework" />
       <excludeFolder url="file://$MODULE_DIR$/laravel/vendor/intervention/gif" />
       <excludeFolder url="file://$MODULE_DIR$/laravel/vendor/intervention/image" />
+      <excludeFolder url="file://$MODULE_DIR$/laravel/vendor/paragonie/random_compat" />
+      <excludeFolder url="file://$MODULE_DIR$/laravel/vendor/paragonie/sodium_compat" />
+      <excludeFolder url="file://$MODULE_DIR$/laravel/vendor/pusher/pusher-php-server" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

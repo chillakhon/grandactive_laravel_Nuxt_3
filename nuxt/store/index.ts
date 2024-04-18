@@ -14,7 +14,8 @@ export const useAppStore = defineStore({
         newAds: null,
         flash: {},
         users: null,
-        message: null
+        message: null,
+        notification: [],
     }),
 
 })

@@ -15,10 +15,19 @@
                   Войти
                 </button>
               </div>
+
               <div @click="showProfile" v-else id="profile_dropdown" class="profile-dropdown__btn ui-dropdown__btn">
                 <div class="profile-dropdown__avatar" data-current-user-avatar="">
-                  <img id="img_avatar" alt="Avatar" src="https://www.grandactive.ru/UploadedFiles/Avatars/100x100/cbc5f4c6-1af2-4ab4-a268-e272260c685d.png">
+                  <div class="avatar-container">
+                    <img id="img_avatar" alt="Avatar" src="https://www.grandactive.ru/UploadedFiles/Avatars/100x100/cbc5f4c6-1af2-4ab4-a268-e272260c685d.png">
+                    <div v-show="notification" class="spinner-overlay" >
+                      <div class="spinner-grow text-danger" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
+
                 <div class="profile-dropdown__name" data-current-user-short-name="">
                   {{useAppStore().user.name}}
                 </div>
@@ -60,12 +69,17 @@ import AuthUser from "~/components /auth/auth-user.vue";
 import {useAppStore} from "~/store/index.ts";
 import axios from "axios";
 import DropdownForNav from "~/components /DropdownForNav.vue";
+import Pusher from "pusher-js";
 
 const show = ref(false)
 const user = useAppStore().user
 const showProfile = () => {
   show.value = !show.value
 }
+
+const notification =  ref( computed(() => {
+  return useAppStore()?.notification.find(receiver => (receiver.receiver_id == useAppStore().user.id))
+}))
 
 const logout = async () => {
   let token = useCookie('token')
@@ -90,6 +104,16 @@ onMounted(() => {
       show.value = false
     }
   })
+
+  const pusher = new Pusher('6c17bd8627071788d0e4', {
+    cluster: 'ap2'
+  });
+  const channel = pusher.subscribe('my-channel');
+  channel.bind('message', (data) => {
+    useAppStore().notification.push(data)
+    useAppStore().message.push(data)
+  });
+
 })
 
 
@@ -98,6 +122,23 @@ onMounted(() => {
 </script>
 
 <style >
+
+.spinner-grow{
+ width: 15px;
+  height: 15px;
+}
+
+
+.avatar-container {
+  position: relative;
+}
+
+.spinner-overlay {
+  position: absolute;
+  top: -1px;
+  left: 4px;
+
+}
 
 .profile-dropdown__content{
   margin-right: 240px;
@@ -111,5 +152,8 @@ onMounted(() => {
     margin-top: 6px;
   }
 }
+
+
+
 
 </style>

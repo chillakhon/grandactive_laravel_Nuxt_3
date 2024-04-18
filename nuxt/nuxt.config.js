@@ -21,7 +21,8 @@ export default defineNuxtConfig({
   },
 
   plugins: [
-    {src: '~/plugins/bootstrap.js', mode: 'client'}
+    {src: '~/plugins/bootstrap.js', mode: 'client'},
+    { src: '~/plugins/pusher.js', ssr: false }
   ],
 
   components: {

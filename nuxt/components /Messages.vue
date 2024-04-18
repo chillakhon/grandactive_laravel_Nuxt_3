@@ -13,9 +13,19 @@
             @click="setActiveUser(user.adv.id)"
             v-if="useAppStore().user?.id == user.receiver?.id || useAppStore().user?.id == user.sender?.id"
         >
-          <div  class="user-info">
-            <h3>{{ useAppStore().user?.id == user.receiver?.id ? user.sender?.name : user.receiver?.name }}</h3>
-            <h3 class="name_ad">{{ user.adv?.name}}</h3>
+          <div class="user-info">
+            {{activeAd?.receiver_id == useAppStore().user?.id ? activeAd?.receiver_id : activeAd?.sender_id}} / {{useAppStore().user?.id}}
+            <div class="status-ad">
+              <div>
+                <h3>{{ useAppStore().user?.id == user.receiver?.id ? user.sender?.name : user.receiver?.name }}</h3>
+              </div>
+              <div v-if="notification?.adv_id == user.adv?.id" class="spinner-grow text-success">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+
+            </div>
+
+            <h3 class="name_ad">{{ user.adv?.name }}</h3>
           </div>
           <div class="user-status">
             <span v-if="user.status == 'online' " class="online-status"></span>
@@ -64,7 +74,9 @@
           <div class="message-time">{{ message.adv_id == activeUserId  ? formatTime(message.timestamp) : null }}</div>
         </div>
       </div>
-      <div class="chat-input">
+      <div
+          :class="{'disabled_element_input' : !activeUserId}"
+          class="chat-input">
         <button class="btn-icon">
           <i class="fas fa-smile"></i>
         </button>
@@ -89,20 +101,25 @@ import usersMiddleware from "~/middleware/usersMiddleware.js";
 import {useAppStore} from "~/store/index.ts";
 import messageMiddleware from "~/middleware/messageMiddleware.js";
 import axios from "axios";
+import Pusher from "pusher-js";
 messageMiddleware()
 
+const notification =  ref( computed(() => {
+  return useAppStore()?.notification.find(receiver => (receiver.receiver_id == useAppStore().user.id))
+}))
 
 const users = ref(computed(() => {
   return useAppStore().users?.filter(user => user.id !== useAppStore().user?.id)
 }))
 
 const messages = ref(computed(() => {
-  return useAppStore().message
+    return useAppStore().message
 }))
 
 
-const activeUserId = ref(1)
-const activeAd = computed(() => activeUserMessages.value?.find((ad) => ad.adv.id == activeUserId.value))
+
+const activeUserId = ref()
+const activeAd = computed(() => activeUserMessages.value?.find((ad) => ad.adv?.id == activeUserId.value))
 
 const activeUserMessages = ref(computed(() => {
   const messages = useAppStore().message;
@@ -125,25 +142,24 @@ const activeUserMessages = ref(computed(() => {
 
 const newMessage = ref('')
 const sendMessage = async () => {
-  if (newMessage.value.trim() !== '') {
-    messages.value.push({
-      sender_id: useAppStore().user.id,
-      text: newMessage.value,
-      adv_id: activeAd.value?.adv_id,
-      receiver_id: activeAd.value?.receiver_id == useAppStore().user.id ? activeAd.value?.sender_id : activeAd.value?.receiver_id,
-      timestamp: Date.now(),
-    })
-  }
+  // if (newMessage.value.trim() !== '') {
+  //   messages.value.push({
+  //     sender_id: useAppStore().user.id,
+  //     text: newMessage.value,
+  //     adv_id: activeAd.value?.adv_id,
+  //     receiver_id: activeAd.value?.receiver_id == useAppStore().user.id ? activeAd.value?.sender_id : activeAd.value?.receiver_id,
+  //     timestamp: Date.now(),
+  //   })
+  // }
   const formData =  new FormData
   formData.append('text', newMessage.value)
   formData.append('sender_id', useAppStore().user.id)
   formData.append('receiver_id', activeAd.value?.receiver_id == useAppStore().user.id ? activeAd.value?.sender_id : activeAd.value?.receiver_id)
   formData.append('adv_id', activeAd.value?.adv_id)
-  await axios.post('/api/createMessage',formData).then(res => {
-    console.log(res.data)
-  })
+  await axios.post('/api/createMessage',formData)
   newMessage.value = ''
 }
+
 
 const formatTime = (timestamp) => {
   return dayjs(timestamp).format('HH:mm')
@@ -151,6 +167,10 @@ const formatTime = (timestamp) => {
 
 const setActiveUser = (adId) => {
   activeUserId.value = adId
+  const notification  = useAppStore().notification.find(ad => (ad.adv_id = adId))
+  if (notification) {
+    useAppStore().notification.splice(useAppStore().notification.indexOf(notification), 1)
+  }
   if (document.documentElement.clientWidth < 750){
     const chatSidebar = document.querySelector('.chat-sidebar')
     const chatContent = document.querySelector('.chat-content')
@@ -166,9 +186,32 @@ const leftChat = () => {
 }
 
 
+watch(() => {
+  // console.log(activeUserId.value)
+  // const notification  = useAppStore().notification.find(ad => (ad.adv_id = activeUserId))
+  // if (notification) {
+  //   if (notification?.adv_id == activeUserId.value) {
+  //     useAppStore().notification.splice(useAppStore().notification.indexOf(notification), 1)
+  //   }
+  // }
+
+})
+
 </script>
 
 <style>
+
+.disabled_element_input{
+  opacity: 0.5 !important;
+  pointer-events: none !important;
+}
+
+
+.status-ad{
+  display: flex;
+}
+
+
 @media only screen and  (max-width: 750px) {
   .chat-container{
     flex-direction: column;
@@ -388,7 +431,7 @@ const leftChat = () => {
 }
 
 .message-content {
-  background-color: #fff;
+  background-color: #f4fff2;
   padding: 8px 12px;
   border-radius: 16px;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
